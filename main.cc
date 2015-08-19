@@ -10,8 +10,8 @@
 #include <unistd.h>
 
 /*
-   It should be really simple, use getaddrinfo(),set PF_UNSPEC and
-   AI_PASSIVE, you get an ipv6 address first, bind to it an receive ipv4
+   It should be really simple, use getaddrinfo(), set PF_UNSPEC and
+   AI_PASSIVE, you get an ipv6 address first, bind to it and receive ipv4
    and ipv6 on the same socket.
 
    But It's not. The only really reliable way ist to bind two sockets,
