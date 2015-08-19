@@ -20,9 +20,12 @@
    Major glibc fuckup.
 
    see:
-   https://w3.hepix.org/ipv6-bis/doku.php?id=ipv6:siteconfig
+   http://hepix-ipv6.web.cern.ch/content/slc6-actually-glibc-29-change-aipassive-bind-pfunspec-getaddrinfo-preference
 
    for a /etc/gai.conf that fixes stupid defaults
+
+   see also:
+   https://sourceware.org/bugzilla/show_bug.cgi?id=9981
 */
 
 namespace netdb {
