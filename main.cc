@@ -2,12 +2,11 @@
 #include <errno.h>
 #include <cstring>
 #include <string>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <iostream>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <functional>
 
 /*
    It should be really simple, use getaddrinfo(), set PF_UNSPEC and
@@ -35,7 +34,7 @@ public:
 	addrinfo()
 	:
 		error_(),
-		result_(0)
+		result_(nullptr)
 	{
 		memset(&hints_, 0, sizeof(hints_));
 	}
@@ -56,9 +55,9 @@ public:
 		return false;
 	}
 
-	bool foreach(boost::function<bool(::addrinfo const *)> const& cb)
+	bool foreach(std::function<bool(::addrinfo const *)> const& cb)
 	{
-		for (::addrinfo const* ai(result_); ai != 0; ai = ai->ai_next) {
+		for (::addrinfo const* ai(result_); ai != nullptr; ai = ai->ai_next) {
 			if (cb(ai)) {
 				return true;
 			}
@@ -89,7 +88,7 @@ private:
 
 		if (result_) {
 			::freeaddrinfo(result_);
-			result_ = 0;
+			result_ = nullptr;
 		}
 	}
 
@@ -126,7 +125,7 @@ public:
 			return false;
 		}
 
-		if (!resolver.foreach(boost::bind(&Listener::try_bind, this, _1))) {
+		if (!resolver.foreach(std::bind(&Listener::try_bind, this, std::placeholders::_1))) {
 			std::cerr << "failed to bind\n";
 			return false;
 		}
@@ -179,7 +178,7 @@ private:
 int main()
 {
 	Listener listener;
-	if (!listener.listen(NULL, "1234")) {
+	if (!listener.listen(nullptr, "1234")) {
 		return 1;
 	}
 
