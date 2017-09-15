@@ -47,11 +47,8 @@ public:
 			return true;
 		}
 
-		if (ret == EAI_SYSTEM) {
-			error_ = strerror(errno);
-		} else {
-			error_ = gai_strerror(ret);
-		}
+		error_ = (ret == EAI_SYSTEM) ?
+			::strerror(errno) : ::gai_strerror(ret);
 		return false;
 	}
 
