@@ -42,7 +42,7 @@ public:
 	bool resolve(const char *host, const char *service)
 	{
 		reset();
-		int ret(getaddrinfo(host, service, &hints_, &result_));
+		auto ret(getaddrinfo(host, service, &hints_, &result_));
 		if (ret == 0) {
 			return true;
 		}
@@ -57,7 +57,7 @@ public:
 
 	bool foreach(std::function<bool(::addrinfo const *)> const& cb)
 	{
-		for (::addrinfo const* ai(result_); ai != nullptr; ai = ai->ai_next) {
+		for (auto ai(result_); ai != nullptr; ai = ai->ai_next) {
 			if (cb(ai)) {
 				return true;
 			}
@@ -132,7 +132,7 @@ public:
 
 	bool accept()
 	{
-		int fd(::accept(fd_, 0, 0));
+		auto fd(::accept(fd_, 0, 0));
 		if (fd == -1) {
 			std::cerr << "accept(): " << strerror(errno) << "\n";
 			return false;
@@ -150,7 +150,7 @@ private:
 			return false;
 		}
 
-		const int on(1);
+		auto const on(1);
 		if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
 			close_fd();
 			return false;
