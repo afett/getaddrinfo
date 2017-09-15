@@ -108,9 +108,7 @@ public:
 
 	~Listener()
 	{
-		if (fd_ != -1) {
-			::close(fd_);
-		}
+		close_fd();
 	}
 
 	bool listen(const char *host, const char *port)
@@ -147,29 +145,36 @@ public:
 private:
 	bool try_bind(::addrinfo const* ai)
 	{
-		int fd(::socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol));
-		if (fd == -1) {
+		fd_ = ::socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+		if (fd_ == -1) {
 			return false;
 		}
 
 		const int on(1);
-		if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
-			close(fd);
+		if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
+			close_fd();
 			return false;
 		}
 
-		if (::bind(fd, ai->ai_addr, ai->ai_addrlen) == -1) {
-			close(fd);
+		if (::bind(fd_, ai->ai_addr, ai->ai_addrlen) == -1) {
+			close_fd();
 			return false;
 		}
 
-		if (::listen(fd, 0) == -1) {
-			close(fd);
+		if (::listen(fd_, 0) == -1) {
+			close_fd();
 			return false;
 		}
 
-		fd_ = fd;
 		return true;
+	}
+
+	void close_fd()
+	{
+		if (fd_ != -1) {
+			::close(fd_);
+			fd_ = -1;
+		}
 	}
 
 	int fd_;
