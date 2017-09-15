@@ -36,13 +36,13 @@ public:
 		error_(),
 		result_(nullptr)
 	{
-		memset(&hints_, 0, sizeof(hints_));
+		::memset(&hints_, 0, sizeof(hints_));
 	}
 
 	bool resolve(const char *host, const char *service)
 	{
 		reset();
-		auto ret(getaddrinfo(host, service, &hints_, &result_));
+		auto ret(::getaddrinfo(host, service, &hints_, &result_));
 		if (ret == 0) {
 			return true;
 		}
@@ -131,11 +131,11 @@ public:
 	{
 		auto fd(::accept(fd_, 0, 0));
 		if (fd == -1) {
-			std::cerr << "accept(): " << strerror(errno) << "\n";
+			std::cerr << "accept(): " << ::strerror(errno) << "\n";
 			return false;
 		}
 
-		close(fd);
+		::close(fd);
 		return true;
 	}
 
@@ -148,7 +148,7 @@ private:
 		}
 
 		auto const on(1);
-		if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
+		if (::setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
 			close_fd();
 			return false;
 		}
