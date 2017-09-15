@@ -99,7 +99,6 @@ private:
 
 }
 
-
 class Listener {
 public:
 	Listener()
@@ -144,6 +143,7 @@ public:
 		close(fd);
 		return true;
 	}
+
 private:
 	bool try_bind(::addrinfo const* ai)
 	{
